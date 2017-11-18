@@ -5,6 +5,19 @@ const keys = require('../config/keys');
 
 const User = mongoose.model('users');
 
+// user is whatever you pull out of the database from the strategy's query
+passport.serializeUser((user, done) => {
+  // user.id != profile.id. user.id is mongo. profile.id is google. user.id becomes the token
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  User.findById(id)
+    .then(user => {
+      done(null, user);
+    });
+});
+
 //creates a new instance of a Google Strategy
 passport.use(
   new GoogleStrategy(
@@ -14,8 +27,17 @@ passport.use(
       callbackURL: '/auth/google/callback'
     },
     (accessToken, refreshToken, profile, done) => {
-      //creates a new instance of a user and saves it to the database
-      new User({ googleId: profile.id }).save();
+      User.findOne({ googleId: profile.id })
+        .then((existingUser) => {
+          if (existingUser) {
+            done(null, existingUser);
+          } else {
+            // creates a new instance of a user and saves it to the database
+            new User({ googleId: profile.id })
+              .save()
+              .then(user => done(null, existingUser));
+          }
+        });
     } 
   )
 );
