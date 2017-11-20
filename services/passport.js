@@ -32,11 +32,11 @@ passport.use(
 
       if (existingUser) {
         done(null, existingUser);
-      } else {
-        // creates a new instance of a user and saves it to the database
-        const user = await new User({ googleId: profile.id }).save()
-        done(null, user);
       }
+
+      // creates a new instance of a user and saves it to the database
+      const user = await new User({ googleId: profile.id }).save()
+      done(null, user);
     } 
   )
 );
