@@ -8,7 +8,11 @@ const surveySchema = new Schema({
   body: String,
   recipients: [RecipientScehma],
   yes: { type: Number, default: 0 },
-  no: { type: Number, default: 0 }
+  no: { type: Number, default: 0 },
+  // how to relate a property to another model (User)
+  _user: { type: Schema.Types.ObjectId, ref: 'User'},
+  dateSent: Date,
+  lastResponded: Date
 });
 
 mongoose.model('surveys', surveySchema);
