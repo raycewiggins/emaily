@@ -1,8 +1,22 @@
+const mongoose = require('mongoose');
 const requireLogin = require('../middlewares/requireLogin');
 const requireCredits = require('../middlewares/requireCredits');
 
+const Survey = mongoose.model('surveys');
+
 module.exports = app => {
   app.post('/api/surveys', requireLogin, requireLogin, (req, res) => {
-
+    const { title, subject, body, recipients } = req.body;
+  
+    // makes an instance of a survey in memory (has not been saved yet)
+    const survey = new Survey({
+      title,
+      subject,
+      body,
+      // splits the recipients string and returns an array of abjects with property of email with the assigned email address.
+      recipients: recipients.split(',').map(email => ({ email: email.trim() })),
+      _user: req.user.id,
+      dateSent: Date.now()
+    });
   });
 };
