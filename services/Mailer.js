@@ -1,6 +1,6 @@
 const sendgrid = require('sendgrid')
 const helper = sendgrid.mail;
-const keys = require('../congig/keys');
+const keys = require('../config/keys');
 
 class Mailer extends helper.Mail {
   constructor({ subject, recipients }, content) {
@@ -9,8 +9,8 @@ class Mailer extends helper.Mail {
     this.sgApi = sendgrid(keys.sendGridKey);
     this.from_email = new helper.Email('no-reply@emaily.com');
     this.subject = subject;
-    this.body = new helper.Contect('text/html', content);
-    this.recipeints = this.formatAddresses(recipients);
+    this.body = new helper.Content('text/html', content);
+    this.recipients = this.formatAddresses(recipients);
 
     this.addContent(this.body);
     this.addClickTracking();
@@ -34,7 +34,7 @@ class Mailer extends helper.Mail {
 
   addRecipients() {
     const personalize = new helper.Personalization();
-    this.recipeints.forEach(recipient => {
+    this.recipients.forEach(recipient => {
       personalize.addTo(recipient);
     });
     this.addPersonalization(personalize);
