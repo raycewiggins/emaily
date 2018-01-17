@@ -44,11 +44,10 @@ class Mailer extends helper.Mail {
   async send() {
     const request = this.sgApi.emptyRequest({
       method: 'POST',
-      path: '/v3/mail/semd',
+      path: '/v3/mail/send',
       body: this.toJSON()
     });
-
-    const response = this.sgApi.API(request);
+    const response = await this.sgApi.API(request);
     return response;
   }
 };
